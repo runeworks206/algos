@@ -12,8 +12,71 @@
 </body>
 <script>
 
+let body;
+let raiseEvent = function(target, event, datum) { return target.dispatchEvent(new CustomEvent(event, {detail:datum})) }
+
+function isTextBox(element) {
+  var tagName = element.tagName.toLowerCase();
+  if (tagName === 'textarea') return true;
+  if (tagName !== 'input') return false;
+  // if any of these input types is not supported by a browser, it will behave as input type text.
+  inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search', 'date', 'datetime', 'datetime-local', 'time', 'month', 'week']
+  return inputTypes.indexOf(element?.type) >= 0;
+}
+
 document.addEventListener('DOMContentLoaded', async (e) => {
-  
+  console.log(runeworks.algos)
+
+  body = document.querySelector('body')
+
+  let html = ''
+  let template  = '<div id="rw-ALGO" class="rw-algorithm"><div class="rw-label">ALGONAME</div>INPUTS<div class="rw-algo-run" onclick="raiseEvent(body, \'run-algo\', this)">RUN</div>'
+      template += '<div id="rw-ALGO-outcome" class="rw-outcome">Output: <div class="rw-outcome-value"></div></div></div>'
+
+  let meta = runeworks.algos.meta
+
+  Object.keys(runeworks.algos).forEach(algo => {
+    if (algo != 'meta') {
+      let metadata = meta[algo]
+      let inputs   = ''
+      Object.entries(metadata.inputs).forEach(([input, exec]) => {
+        inputs += `<input id="rw-${algo}-input-${input}" class="rw-${exec}" placeholder="${input}"></input>`
+      })
+      html += template.replace("ALGONAME", metadata.name).replace('"rw-ALGO"', 'rw-' + algo).replace('INPUTS', inputs).replace('id="rw-ALGO-outcome"','id="rw-' + algo + '-outcome"')
+    }
+  })
+  body.insertAdjacentHTML('beforeend', html)
+
+  // Listen
+  body.addEventListener('run-algo', (e) => {
+    let source = e.detail?.parentNode
+    // console.log(source)
+
+    let algorithm = source?.id
+    if (algorithm.length) {
+      algorithm = algorithm.replace('rw-','')
+    }
+    // console.log(algorithm)
+
+    let args = []
+    for (var i = 0; i < source.children.length; i++) {
+      let child = source.children[i]
+      if (isTextBox(child)) {
+        let value = child?.value
+        if (child.className.match('json')) { value = JSON.parse(value) }
+        args.push(value)
+      }
+    }
+    // console.log(args)
+
+    // Call the function
+    // console.log(`Running ${algorithm} using args ${args}`)
+    let outcome = runeworks.algos[algorithm](...args)
+    // console.log(outcome)
+
+    let outcomeElement = source.querySelector('.rw-outcome-value')
+    outcomeElement.innerHTML = outcome
+  })
 })
 
 </script>
