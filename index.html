@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>rw algorithm implements</title>
-  <script src='scripts/rw-algos.js'></script>
+  <script src='rw-algorithms.js'></script>
 <style>
 </style>
 </head>
@@ -25,7 +25,8 @@ function isTextBox(element) {
 }
 
 document.addEventListener('DOMContentLoaded', async (e) => {
-  console.log(runeworks.algos)
+  console.log(runeworks.algorithms)
+  let algos = runeworks.algorithms
 
   body = document.querySelector('body')
 
@@ -33,9 +34,9 @@ document.addEventListener('DOMContentLoaded', async (e) => {
   let template  = '<div id="rw-ALGO" class="rw-algorithm"><div class="rw-label">ALGONAME</div>INPUTS<div class="rw-algo-run" onclick="raiseEvent(body, \'run-algo\', this)">RUN</div>'
       template += '<div id="rw-ALGO-outcome" class="rw-outcome">Output: <div class="rw-outcome-value"></div></div></div>'
 
-  let meta = runeworks.algos.meta
+  let meta = algos.meta
 
-  Object.keys(runeworks.algos).forEach(algo => {
+  Object.keys(algos).forEach(algo => {
     if (algo != 'meta') {
       let metadata = meta[algo]
       let inputs   = ''
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 
     // Call the function
     // console.log(`Running ${algorithm} using args ${args}`)
-    let outcome = runeworks.algos[algorithm](...args)
+    let outcome = algos[algorithm](...args)
     // console.log(outcome)
 
     let outcomeElement = source.querySelector('.rw-outcome-value')

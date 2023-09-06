@@ -1,6 +1,6 @@
 runeworks = typeof runeworks != 'undefined' ? runeworks : {}
 
-runeworks.algos = (function() {
+runeworks.algorithms = (function() {
   let meta = {
     binarySearch: {
       name  : 'Binary search',
@@ -8,6 +8,8 @@ runeworks.algos = (function() {
         "array" : 'json',
         "target": 'string',
       },
+      desc: 'A logarithmic time search algorithm for a target within a sorted array.',
+      links: ["https://www.techiedelight.com/binary-search/"],
     },
   }
 
